@@ -1,5 +1,12 @@
 package application
 
+import (
+	"errors"
+
+	"github.com/asaskevich/govalidator"
+	uuid "github.com/satori/go.uuid"
+)
+
 type ProductInterface interface {
 	IsValid() (bool, error)
 	Enable() error
@@ -22,3 +29,12 @@ type Product struct {
 	Price  float64 `valid:"float,optional"`
 	Status string  `valid:"required"`
 }
+
+func (p *Product) Enable() error {
+	if p.Price > 0 {
+		p.Status = ENABLED
+		return nil
+	}
+	return errors.New("the price must be greater than zero to enable the product")
+}
+
